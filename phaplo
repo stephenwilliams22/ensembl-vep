@@ -1,6 +1,3 @@
-#Because haplo can take a while to run this will split the VCF into 10 chunks, and run a seperate instance of 
-#haplo on each one then cat them all together. 
-
 #grab the header
 head -n 10000 $1 | grep "^#" >header
 #grab the non header lines
@@ -8,21 +5,34 @@ grep -v "^#" $1 >variants
 #split into chunks with 1000 lines
 split --number=10 variants
 
-run haplo
-haplo -i xaa -o xaa.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xab -o xab.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xac -o xac.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xad -o xad.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xae -o xae.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xaf -o xaf.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xag -o xag.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xah -o xah.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xai -o xai.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
-haplo -i xaj -o xaj.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+#put the headers back on
+cat xaa	header > xaa.header &
+cat xab header > xab.header &
+cat xac header > xac.header &
+cat xad header > xad.header &
+cat xae header > xae.header &
+cat xaf header > xaf.header &
+cat xag header > xag.header &
+cat xah header > xah.header &
+cat xai header > xai.header &
+cat xaj header > xaj.header &
 
 wait
 
-cat xa*.haplo.vcf > $1.temp
-cat header $1.temp > $1.haplo.vcf
+#run haplo
+haplo -i xaa.header -o xaa.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xab.header -o xab.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xac.header -o xac.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xad.header -o xad.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xae.header -o xae.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xaf.header -o xaf.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xag.header -o xag.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xah.header -o xah.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xai.header -o xai.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
+haplo -i xaj.header -o xaj.haplo.vcf --cache --dir /mnt/home/stephen/.vep/ &
 
-rm -f header variants $1.temp
+wait
+
+vcf-concat xa*.haplo.vcf  > $1.haplo.vcf
+
+rm -f header variants xa*.haplo.vcf *.header
