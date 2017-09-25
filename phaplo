@@ -1,5 +1,5 @@
 #Because haplo can take a while to run this will split the VCF into 10 chunks, and run a seperate instance of 
-#haplo on each one then cat them all together
+#haplo on each one then cat them all together. 
 
 #grab the header
 head -n 10000 $1 | grep "^#" >header
