@@ -1,5 +1,19 @@
-#Because haplo can take a while to run this will split the VCF into 10 chunks, and run a seperate instance of 
-#haplo on each one then cat them all together
+#!/bin/bash
+
+if [ "$1" == "-h" ]; then
+  echo "Usage: `basename $0` [my.vcf]"
+  exit 0
+fi
+
+
+#make sure there is an inputfile
+if [ $# -eq 0 ]
+  then
+    echo "No arguments supplied"
+    echo "Use -h for info"
+    exit 1
+fi
+
 
 #grab the header
 head -n 10000 $1 | grep "^#" >header
@@ -9,16 +23,16 @@ grep -v "^#" $1 >variants
 split --number=10 variants
 
 #put the headers back on
-cat xaa	header > xaa.header &
-cat xab header > xab.header &
-cat xac header > xac.header &
-cat xad header > xad.header &
-cat xae header > xae.header &
-cat xaf header > xaf.header &
-cat xag header > xag.header &
-cat xah header > xah.header &
-cat xai header > xai.header &
-cat xaj header > xaj.header &
+cat xaa header > xaa.header &
+cat xab	header > xab.header &
+cat xac	header > xac.header &
+cat xad	header > xad.header &
+cat xae	header > xae.header &
+cat xaf	header > xaf.header &
+cat xag	header > xag.header &
+cat xah	header > xah.header &
+cat xai	header > xai.header &
+cat xaj	header > xaj.header &
 
 wait
 
